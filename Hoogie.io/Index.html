@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Menu </title>
+<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
+<script>
+function start(){
+sjs.open("target" ,900 , 600);
+
+var backround = new sjs.Image("Images/House.png")
+
+backround.setSize(sjs.getWidth(), sjs.getHeight());
+
+var menu_text = new sjs.Text("Menu",28,"orange");
+menu_text.centerH();
+
+var game_text = new sjs.Text("Use Arrow Keys To eat Smaller chickens And be full Watch Out For Bigger chickens the squirrels and racoons are here to distract you Good Luck!!!",28,"Black")
+game_text.centerH().offset(0,30);
+
+var startBtn = new sjs.Button("Attack!", function(){
+window.location = "hoogie.html";
+});
+
+startBtn.centerH();
+
+var info_text = new sjs.Text(" Made by Philip Clark Space for music",20,"black");
+info_text.bottom().centerH();
+
+}
+</script>
+</head>
+<body onload="start()">
+<h1> Fish </h1>
+
+<div id="target" style="margin:auto;background:grey;"></div>
+</body>
+</html>

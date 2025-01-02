@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Hoogie Shooter </title>
+<script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script>
+<script>
+function start(){
+sjs.open("target", 900, 600);
+
+//backround music
+
+var playM = new Audio('Music/only.mp3');
+var toggle = true;
+var musicOn = false;
+sjs.keyDown(SPACE_KEY, function(){
+	if(toggle == true){
+	if(musicOn == false){
+		playM.play();
+        musicOn = true;
+	} else {
+     playM.pause();
+     musicOn = false;
+	}
+     toggle = false;
+     setTimeout(function(){
+     toggle = true;
+     },1000);
+}
+	
+	});
+
+
+
+var backround = new sjs.Image("Images/Farm.png")
+
+backround.setSize(sjs.getWidth(), sjs.getHeight());
+
+//player properties
+
+var player = new sjs.Image("Images/Hoogie");
+player.type = "player";
+player.setSize(75,75)
+
+player.friction = 0.2;
+player.accel = 0.3;
+
+
+sjs.keyDown(RIGHT_KEY, function(){
+	player.setImage("Images/Hoogie.png");
+	player.pushRight();
+});
+
+sjs.keyDown(LEFT_KEY, function(){
+	player.setImage("Images/Hoogie.png")
+	player.pushLeft();
+});
+
+sjs.keyDown(UP_KEY, function(){
+	player.pushUp();
+});
+
+sjs.keyDown(DOWN_KEY, function(){
+	player.pushDown();
+});
+
+//powerup
+
+setInterval(function(){
+var x = Math.floor(Math.random() * 783);
+var y = Math.floor(Math.random() * 470);
+
+	var powerup = new sjs.Image("Images/Kibble.png");
+	powerup.type = "powerup";
+	powerup.setGravity();
+	powerup.setSize (22,34);
+	powerup.noBounds = true
+	powerup.moveTo (x, y);
+	powerup.friction = .2
+
+	}, 5000);
+
+sjs.onHit ("powerup","bottom_screen", function(x,y){
+	x.destroy();
+
+});
+
+sjs.onHit("player","powerup",function(x,y){
+	x.grow(60,30);
+	setTimeout(function(){
+		x.grow(-60,-30);
+	}, 4000);
+	y.destroy();
+	});
+
+setInterval(function(){
+var x = Math.floor(Math.random() * 783);
+var y = Math.floor(Math.random() * 470);
+
+
+var power = new sjs.Image("Images/Wet_Food.png");
+	power.type = "powerup";
+	power.setGravity();
+	power.setSize (30,40);
+	power.noBounds = true
+	power.moveTo (x, y);
+	power.friction = .2
+
+   }, 10000);
+
+sjs.onHit ("power","bottom_screen", function(x,y){
+	x.destroy();
+
+});
+
+sjs.onHit("player","power",function(x,y){
+	x.grow(80,50);
+	setTimeout(function(){
+		x.grow(-80,-50);
+	}, 5000);
+	y.destroy();
+	});
+
+//bad guys
+
+setInterval(function(){
+	var speed = Math.round(1 + Math.random()*10);
+	if(Math.random() > 0.5){
+		var enemy = new sjs.Image("Images/ChickenR.png");
+		enemy.type = "enemy";
+		enemy.setSize(100,50);
+		enemy.noBounds = true;
+		enemy.friction = 0;
+		enemy.pushRight(speed);
+		enemy.scaleSize(.5 + Math.random() * 1.2);
+		enemy.moveTo(-enemy.getWidth(), Math.random() * (enemy.getClamp().y));
+       } else {
+       	var enemy = new sjs.Image("Images/ChickenL.png");
+        enemy.type = "enemy";
+        enemy.setSize (100,50);
+        enemy.noBounds = true;
+        enemy.friction = 0;
+        enemy.pushLeft (speed);
+        enemy.scaleSize(.5 + Math.random() * 1.2);
+        enemy.moveTo(sjs.getWidth(), Math.random() * (enemy.getClamp().y));
+       }
+	},1000);
+
+		sjs.left_screen.offset(-500);
+        sjs.right_screen.offset(-500);
+
+        sjs.onHit("enemy",["right_screen","right_screen"], function(x,y){
+
+        	x.destroy();
+
+       });
+
+        //score
+        var score = 0;
+        var score_txt = new sjs.Text("score",21,"orange")
+
+
+        sjs.onHit("player","enemy", function(x,y){
+        if(x.getWidth() > y.getWidth()  && x.getHeight() > y.getHeight()) {
+        score = score + 1;
+        score_txt.setText("score: "+score);
+        localStorage.setItem("score",score);
+        	x.grow(9,4);
+        	if(score >= 50){
+              window.location = "win.html"
+            }
+        } else {
+        	x.destroy();
+              window.location = "gameover.html"
+            }
+            y.destroy();
+        });
+
+
+}
+
+setInterval(function(){
+	var speed = Math.round(1 + Math.random()*10);
+	if(Math.random() > 0.4){
+		var bad= new sjs.Image("Images/SquirrelL.png");
+		bad.type = "bad";
+		bad.setSize(100,50);
+		bad.noBounds = true;
+		bad.friction = 0;
+		bad.pushRight(speed);
+		bad.scaleSize(.5 + Math.random() * 1.2);
+		bad.moveTo(-bad.getWidth(), Math.random() * (bad.getClamp().y));
+       } else {
+       	var bad = new sjs.Image("Images/RacoonR.png");
+        bad.type = "bad";
+        bad.setSize (100,50);
+        bad.noBounds = true;
+        bad.friction = 0;
+        bad.pushLeft (speed);
+        bad.scaleSize(.5 + Math.random() * 1.2);
+        bad.moveTo(sjs.getWidth(), Math.random() * (bad.getClamp().y));
+       }
+	},1000);
+
+		sjs.left_screen.offset(-500);
+        sjs.right_screen.offset(-500);
+
+        sjs.onHit("bad",["right_screen","right_screen"], function(x,y){
+
+        	x.destroy();
+
+       });
+
+         var score = 0;
+        var score_txt = new sjs.Text("score",21,"orange")
+
+
+        sjs.onHit("player","bad", function(x,y){
+        if(x.getWidth() > y.getWidth()  && x.getHeight() > y.getHeight()) {
+        score = score + 1;
+        score_txt.setText("score: "+score);
+        localStorage.setItem("score",score);
+        	x.grow(10,5);
+        	if(score >=50){
+              window.location = "win.html"
+            }
+        } else {
+        	x.destroy();
+              window.location = "gameover.html"
+            }
+            y.destroy();
+        });
+
+
+
+
+
+ //end start
+
+ //platform function
+
+
+   </script>
+</head>
+<body onload="start()">
+<h1> UAP Game! </h1>
+
+<div id="target" style="margin:auto;background:grey;"></div>
+</body>
+</html>
